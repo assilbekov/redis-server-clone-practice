@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"log/slog"
 	"net"
@@ -18,6 +17,7 @@ type Server struct {
 	peers     map[*Peer]bool
 	ln        net.Listener
 	addPeerCh chan *Peer
+	quitCh    chan struct{}
 }
 
 func NewServer(cfg Config) *Server {
@@ -28,6 +28,7 @@ func NewServer(cfg Config) *Server {
 		Config:    cfg,
 		peers:     make(map[*Peer]bool),
 		addPeerCh: make(chan *Peer),
+		quitCh:    make(chan struct{}),
 	}
 }
 
@@ -41,16 +42,18 @@ func (s *Server) Start() error {
 
 	go s.loop()
 
+	slog.Info("server started", "addr", s.ListenAddr)
+
 	return s.acceptLoop()
 }
 
 func (s *Server) loop() {
 	for {
 		select {
+		case <-s.quitCh:
+			return
 		case p := <-s.addPeerCh:
 			s.peers[p] = true
-		default:
-			fmt.Println("default")
 		}
 	}
 }
