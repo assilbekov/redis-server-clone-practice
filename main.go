@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"log/slog"
 	"net"
 )
@@ -67,6 +68,12 @@ func (s *Server) acceptLoop() error {
 
 func (s *Server) handleConn(conn net.Conn) {
 	peer := NewPeer(conn)
+	s.addPeerCh <- peer
+
+	peer.readLoop()
 }
 
-func main() {}
+func main() {
+	server := NewServer(Config{})
+	log.Fatal(server.Start())
+}

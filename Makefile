@@ -1,2 +1,5 @@
-run:
-	@go run main.go
+run: build
+	@./bin/goredix
+
+build:
+	@go build -o bin/goredix .
