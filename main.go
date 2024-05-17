@@ -50,10 +50,18 @@ func (s *Server) Start() error {
 	return s.acceptLoop()
 }
 
+func (s *Server) handleRawMessage(rawMsg []byte) error {
+	fmt.Println("received message", string(rawMsg))
+	return nil
+}
+
 func (s *Server) loop() {
 	for {
 		select {
 		case rawMsg := <-s.msgCh:
+			if err := s.handleRawMessage(rawMsg); err != nil {
+				slog.Error("failed to handle message", "err", err)
+			}
 			fmt.Println("received message", rawMsg)
 		case <-s.quitCh:
 			return
