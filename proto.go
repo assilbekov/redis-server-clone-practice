@@ -1,17 +1,39 @@
 package main
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+	"github.com/tidwall/resp"
+	"io"
+	"log"
+)
 
-type Command struct {
-	// ??
+const (
+	CommandSet = "SET"
+)
+
+type Command interface {
+	//
 }
 
-func parseCommand(rawMsg []byte) (Command, error) {
-	t := rawMsg[0]
-	fmt.Println("received message", string(rawMsg))
-	switch t {
-	case '*':
-		fmt.Println(rawMsg[1:])
+type SetCommand struct {
+	key, value string
+}
+
+func parseCommand(raw string) (Command, error) {
+	rd := resp.NewReader(bytes.NewBufferString(raw))
+	for {
+		v, _, err := rd.ReadValue()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+		if v.Type() == resp.Array {
+			for i, v := range v.Array() {
+				fmt.Printf("  #%d %s, value: '%s'\n", i, v.Type(), v)
+			}
+		}
 	}
-	return Command{}, nil
 }

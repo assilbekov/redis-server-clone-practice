@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/tidwall/resp"
 	"io"
 	"log"
@@ -21,10 +20,12 @@ func TestProtocol(t *testing.T) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Read %s\n", v.Type())
 		if v.Type() == resp.Array {
-			for i, v := range v.Array() {
-				fmt.Printf("  #%d %s, value: '%s'\n", i, v.Type(), v)
+			for _, v := range v.Array() {
+				switch v.String() {
+				case CommandSet:
+				default:
+				}
 			}
 		}
 	}
