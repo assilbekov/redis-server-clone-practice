@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/tidwall/resp"
 	"io"
 	"log"
@@ -30,10 +29,23 @@ func parseCommand(raw string) (Command, error) {
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		if v.Type() == resp.Array {
-			for i, v := range v.Array() {
-				fmt.Printf("  #%d %s, value: '%s'\n", i, v.Type(), v)
+			for _, v := range v.Array() {
+				switch v.String() {
+				case CommandSet:
+					if len(v.Array()) != 3 {
+						log.Fatal("invalid command")
+					}
+					cmd := SetCommand{
+						key:   v.Array()[1].String(),
+						value: v.Array()[2].String(),
+					}
+					return cmd, nil
+				default:
+				}
 			}
 		}
 	}
+	return "", nil
 }
