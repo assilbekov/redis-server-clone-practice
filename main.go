@@ -51,7 +51,15 @@ func (s *Server) Start() error {
 }
 
 func (s *Server) handleRawMessage(rawMsg []byte) error {
-	fmt.Println("received message", string(rawMsg))
+	cmd, err := parseCommand(string(rawMsg))
+	if err != nil {
+		return err
+	}
+	switch v := cmd.(type) {
+	case SetCommand:
+		slog.Info("set command", "key", v.key, "value", v.value)
+	}
+
 	return nil
 }
 
