@@ -36,7 +36,7 @@ func parseCommand(raw string) (Command, error) {
 				switch value.String() {
 				case CommandSet:
 					if len(v.Array()) != 3 {
-						log.Fatal("invalid command")
+						return nil, fmt.Errorf("invalid set command: %s", raw)
 					}
 					cmd := SetCommand{
 						key:   v.Array()[1].String(),
