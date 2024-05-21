@@ -1,10 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"context"
 	"log"
 	"log/slog"
 	"net"
+	"redis-server-clone-practice/client"
+	"time"
 )
 
 const defaultListenAddr = ":5001"
@@ -70,7 +72,7 @@ func (s *Server) loop() {
 			if err := s.handleRawMessage(rawMsg); err != nil {
 				slog.Error("failed to handle message", "err", err)
 			}
-			fmt.Println("received message", rawMsg)
+			//fmt.Println("received message", string(rawMsg))
 		case <-s.quitCh:
 			return
 		case p := <-s.addPeerCh:
@@ -105,6 +107,13 @@ func main() {
 		server := NewServer(Config{})
 		log.Fatal(server.Start())
 	}()
+
+	time.Sleep(time.Second * 2)
+
+	c := client.NewClient()
+	if err := c.Set(context.Background(), "leader", "Charlie"); err != nil {
+		log.Fatal(err)
+	}
 
 	select {} // we are blocking here to keep the server running
 }
