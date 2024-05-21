@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"log/slog"
 	"net"
@@ -22,6 +23,9 @@ type Server struct {
 	addPeerCh chan *Peer
 	quitCh    chan struct{}
 	msgCh     chan []byte
+
+	//
+	kv *KV
 }
 
 func NewServer(cfg Config) *Server {
@@ -34,6 +38,7 @@ func NewServer(cfg Config) *Server {
 		addPeerCh: make(chan *Peer),
 		quitCh:    make(chan struct{}),
 		msgCh:     make(chan []byte),
+		kv:        NewKV(),
 	}
 }
 
@@ -59,7 +64,7 @@ func (s *Server) handleRawMessage(rawMsg []byte) error {
 	}
 	switch v := cmd.(type) {
 	case SetCommand:
-		slog.Info("set command", "key", v.key, "value", v.value)
+		return s.kv.Set(v.key, v.value)
 	}
 
 	return nil
@@ -103,8 +108,8 @@ func (s *Server) handleConn(conn net.Conn) {
 }
 
 func main() {
+	server := NewServer(Config{})
 	go func() {
-		server := NewServer(Config{})
 		log.Fatal(server.Start())
 	}()
 
@@ -116,6 +121,8 @@ func main() {
 			log.Fatal(err)
 		}
 	}
+
+	fmt.Println(server.kv.data)
 
 	select {} // we are blocking here to keep the server running
 }
