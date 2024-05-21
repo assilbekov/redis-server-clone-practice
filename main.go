@@ -110,9 +110,11 @@ func main() {
 
 	time.Sleep(time.Second * 2)
 
-	c := client.NewClient()
-	if err := c.Set(context.Background(), "leader", "Charlie"); err != nil {
-		log.Fatal(err)
+	for i := 0; i < 10; i++ {
+		c := client.NewClient()
+		if err := c.Set(context.Background(), "leader", "Charlie"); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	select {} // we are blocking here to keep the server running
