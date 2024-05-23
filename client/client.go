@@ -10,6 +10,7 @@ import (
 
 type Client struct {
 	addr string
+	conn net.Conn
 }
 
 func NewClient() *Client {
@@ -17,9 +18,12 @@ func NewClient() *Client {
 }
 
 func (c *Client) Set(ctx context.Context, key, value string) error {
-	conn, err := net.Dial("tcp", "localhost:5001")
-	if err != nil {
-		return err
+	if c.conn == nil {
+		conn, err := net.Dial("tcp", "localhost:5001")
+		if err != nil {
+			return err
+		}
+		c.conn = conn
 	}
 
 	buf := &bytes.Buffer{}
@@ -30,6 +34,6 @@ func (c *Client) Set(ctx context.Context, key, value string) error {
 		resp.StringValue(value),
 	})
 
-	_, err = io.Copy(conn, buf)
+	_, err := io.Copy(c.conn, buf)
 	return err
 }
