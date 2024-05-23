@@ -117,12 +117,16 @@ func main() {
 
 	for i := 0; i < 10; i++ {
 		c := client.NewClient()
-		if err := c.Set(context.Background(), "leader", "Charlie"); err != nil {
+		if err := c.Set(
+			context.Background(),
+			fmt.Sprintf("leader_%d", i),
+			fmt.Sprintf("Charlie_%d", i),
+		); err != nil {
 			log.Fatal(err)
 		}
 	}
 
+	time.Sleep(time.Second * 2)
 	fmt.Println(server.kv.data)
-
-	select {} // we are blocking here to keep the server running
+	// select {} // we are blocking here to keep the server running
 }
