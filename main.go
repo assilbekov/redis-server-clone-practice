@@ -115,8 +115,8 @@ func main() {
 
 	time.Sleep(time.Second * 2)
 
+	c := client.NewClient()
 	for i := 0; i < 10; i++ {
-		c := client.NewClient()
 		if err := c.Set(
 			context.Background(),
 			fmt.Sprintf("leader_%d", i),
