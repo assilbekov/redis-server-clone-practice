@@ -65,6 +65,11 @@ func (s *Server) handleRawMessage(rawMsg []byte) error {
 	switch v := cmd.(type) {
 	case SetCommand:
 		return s.kv.Set(v.key, v.value)
+	case GetCommand:
+		value, err := s.kv.Get(v.key)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -121,6 +126,12 @@ func main() {
 			fmt.Sprintf("Charlie_%d", i),
 		); err != nil {
 			log.Fatal(err)
+		}
+
+		if v, err := c.Get(context.Background(), fmt.Sprintf("leader_%d", i)); err != nil {
+			log.Fatal(err)
+		} else {
+			fmt.Println(v)
 		}
 	}
 
