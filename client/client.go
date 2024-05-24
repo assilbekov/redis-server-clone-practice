@@ -5,24 +5,23 @@ import (
 	"context"
 	"github.com/tidwall/resp"
 	"io"
-	"log"
 	"net"
 )
 
 type Client struct {
 	addr string
-	conn net.Conn
 }
 
 func NewClient(addr string) *Client {
-	conn, err := net.Dial("tcp", addr)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return &Client{addr: addr, conn: conn}
+	return &Client{addr: addr}
 }
 
 func (c *Client) Set(ctx context.Context, key, value string) error {
+	conn, err := net.Dial("tcp", "localhost:5001")
+	if err != nil {
+		return err
+	}
+
 	buf := &bytes.Buffer{}
 	wr := resp.NewWriter(buf)
 	wr.WriteArray([]resp.Value{
@@ -31,6 +30,6 @@ func (c *Client) Set(ctx context.Context, key, value string) error {
 		resp.StringValue(value),
 	})
 
-	_, err := io.Copy(c.conn, buf)
+	_, err = io.Copy(conn, buf)
 	return err
 }
