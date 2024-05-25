@@ -22,7 +22,7 @@ type SetCommand struct {
 }
 
 type GetCommand struct {
-	key []byte
+	key, value []byte
 }
 
 func parseCommand(raw string) (Command, error) {
