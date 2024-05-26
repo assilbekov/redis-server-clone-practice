@@ -1,7 +1,10 @@
 package main
 
 import (
-	"log/slog"
+	"fmt"
+	"github.com/tidwall/resp"
+	"io"
+	"log"
 	"net"
 )
 
@@ -19,15 +22,41 @@ func NewPeer(conn net.Conn, msgCh chan Message) *Peer {
 }
 
 func (p *Peer) readLoop() error {
-	buf := make([]byte, 1024)
+	rd := resp.NewReader(p.conn)
+
 	for {
-		n, err := p.conn.Read(buf)
-		if err != nil {
-			slog.Error("failed to read from connection", "err", err)
-			return err
+		v, _, err := rd.ReadValue()
+		if err == io.EOF {
+			break
 		}
-		msgBuf := make([]byte, n)
-		copy(msgBuf, buf[:n])
-		p.msgCh <- Message{peer: p, data: msgBuf}
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if v.Type() == resp.Array {
+			for _, value := range v.Array() {
+				switch value.String() {
+				case CommandGet:
+					if len(v.Array()) != 2 {
+						return fmt.Errorf("invalid get command")
+					}
+					cmd := GetCommand{
+						key: v.Array()[1].Bytes(),
+					}
+					fmt.Printf("received get command: %s\n", cmd.key)
+				case CommandSet:
+					if len(v.Array()) != 3 {
+						return fmt.Errorf("invalid set command")
+					}
+					cmd := SetCommand{
+						key:   v.Array()[1].Bytes(),
+						value: v.Array()[2].Bytes(),
+					}
+					fmt.Printf("received get command: %s\n", cmd.key)
+				default:
+				}
+			}
+		}
 	}
+	return nil
 }

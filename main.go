@@ -141,8 +141,6 @@ func main() {
 			log.Fatal(err)
 		}
 
-		time.Sleep(time.Millisecond * 100)
-
 		if v, err := c.Get(context.Background(), fmt.Sprintf("leader_%d", i)); err != nil {
 			log.Fatal(err)
 		} else {
