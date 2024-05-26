@@ -3,24 +3,26 @@ package client
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"github.com/tidwall/resp"
 	"net"
 )
 
 type Client struct {
 	addr string
+	conn net.Conn
 }
 
-func NewClient(addr string) *Client {
-	return &Client{addr: addr}
+func NewClient(addr string) (*Client, error) {
+	conn, err := net.Dial("tcp", addr)
+	if err != nil {
+		return nil, fmt.Errorf("failed to dial: %v", err)
+	}
+
+	return &Client{addr: addr, conn: conn}, nil
 }
 
 func (c *Client) Set(ctx context.Context, key, value string) error {
-	conn, err := net.Dial("tcp", "localhost:5001")
-	if err != nil {
-		return err
-	}
-
 	buf := &bytes.Buffer{}
 	wr := resp.NewWriter(buf)
 	wr.WriteArray([]resp.Value{
@@ -29,16 +31,11 @@ func (c *Client) Set(ctx context.Context, key, value string) error {
 		resp.StringValue(value),
 	})
 
-	_, err = conn.Write(buf.Bytes())
+	_, err := c.conn.Write(buf.Bytes())
 	return err
 }
 
 func (c *Client) Get(ctx context.Context, key string) (string, error) {
-	conn, err := net.Dial("tcp", "localhost:5001")
-	if err != nil {
-		return "", err
-	}
-
 	buf := &bytes.Buffer{}
 	wr := resp.NewWriter(buf)
 	wr.WriteArray([]resp.Value{
@@ -46,12 +43,12 @@ func (c *Client) Get(ctx context.Context, key string) (string, error) {
 		resp.StringValue(key),
 	})
 
-	_, err = conn.Write(buf.Bytes())
+	_, err := c.conn.Write(buf.Bytes())
 	if err != nil {
 		return "", err
 	}
 
 	b := make([]byte, 1024)
-	n, err := conn.Read(b)
+	n, err := c.conn.Read(b)
 	return string(b[:n]), err
 }

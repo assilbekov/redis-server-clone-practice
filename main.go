@@ -127,7 +127,11 @@ func main() {
 
 	time.Sleep(time.Second * 2)
 
-	c := client.NewClient("localhost:5001")
+	c, err := client.NewClient("localhost:5001")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	for i := 0; i < 10; i++ {
 		if err := c.Set(
 			context.Background(),
