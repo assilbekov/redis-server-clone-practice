@@ -43,6 +43,9 @@ func (p *Peer) readLoop() error {
 					cmd := GetCommand{
 						key: v.Array()[1].Bytes(),
 					}
+
+					p.msgCh <- Message{peer: p, cmd: cmd}
+
 					fmt.Printf("received get command: %s\n", cmd.key)
 				case CommandSet:
 					if len(v.Array()) != 3 {
@@ -52,7 +55,10 @@ func (p *Peer) readLoop() error {
 						key:   v.Array()[1].Bytes(),
 						value: v.Array()[2].Bytes(),
 					}
-					fmt.Printf("received get command: %s\n", cmd.key)
+
+					p.msgCh <- Message{peer: p, cmd: cmd}
+
+					fmt.Printf("received set command: %s\n", cmd.key)
 				default:
 				}
 			}
