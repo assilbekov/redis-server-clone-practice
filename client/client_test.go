@@ -8,6 +8,28 @@ import (
 	"time"
 )
 
+func TestNewClient1(t *testing.T) {
+	c, err := NewClient("localhost:5001")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("SET val =>", fmt.Sprintf("Charlie_%d", 999))
+	if err := c.Set(
+		context.Background(),
+		fmt.Sprintf("leader_%d", 999),
+		"999 ",
+	); err != nil {
+		log.Fatal(err)
+	}
+
+	val, err := c.Get(context.Background(), fmt.Sprintf("leader_%d", 999))
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("GET val =>", val)
+}
+
 func TestNewClient(t *testing.T) {
 	c, err := NewClient("localhost:5001")
 	if err != nil {

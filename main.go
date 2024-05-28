@@ -55,7 +55,7 @@ func (s *Server) Start() error {
 
 	go s.loop()
 
-	slog.Info("server started", "addr", s.ListenAddr)
+	slog.Info("redis server started", "addr", s.ListenAddr)
 
 	return s.acceptLoop()
 }
