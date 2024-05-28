@@ -114,7 +114,7 @@ func (s *Server) handleConn(conn net.Conn) {
 }
 
 func main() {
-	listenAddr := flag.String("listen-addr", defaultListenAddr, "server listen address")
+	listenAddr := flag.String("listenAddr", defaultListenAddr, "server listen address")
 	flag.Parse()
 	server := NewServer(Config{
 		ListenAddr: *listenAddr,
