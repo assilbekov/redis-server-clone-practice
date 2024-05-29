@@ -89,6 +89,7 @@ func (s *Server) loop() {
 		case <-s.quitCh:
 			return
 		case p := <-s.addPeerCh:
+			slog.Info("new peer connected", "remoteAddr", p.conn.RemoteAddr())
 			s.peers[p] = true
 		}
 	}

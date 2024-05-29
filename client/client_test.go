@@ -4,12 +4,16 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 	"testing"
 	"time"
 )
 
 func TestNewClients(t *testing.T) {
 	nClients := 10
+	wg := sync.WaitGroup{}
+	wg.Add(nClients)
+
 	for i := 0; i < nClients; i++ {
 		i := i
 		go func() {
@@ -32,9 +36,13 @@ func TestNewClients(t *testing.T) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Printf("GET val => %s, FROM client => %s", val, key)
+			fmt.Printf("GET val => %s, FROM client => %s\n", val, key)
+
+			wg.Done()
 		}()
 	}
+
+	wg.Wait()
 }
 
 func TestNewClient(t *testing.T) {
