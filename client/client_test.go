@@ -8,26 +8,33 @@ import (
 	"time"
 )
 
-func TestNewClient1(t *testing.T) {
-	c, err := NewClient("localhost:5001")
-	if err != nil {
-		log.Fatal(err)
-	}
+func TestNewClients(t *testing.T) {
+	nClients := 10
+	for i := 0; i < nClients; i++ {
+		i := i
+		go func() {
+			c, err := NewClient("localhost:5001")
+			if err != nil {
+				log.Fatal(err)
+			}
 
-	fmt.Println("SET val =>", fmt.Sprintf("Charlie_%d", 999))
-	if err := c.Set(
-		context.Background(),
-		fmt.Sprintf("leader_%d", 999),
-		"999 ",
-	); err != nil {
-		log.Fatal(err)
-	}
+			key := fmt.Sprintf("client_key_%d", i)
+			value := fmt.Sprintf("client_val_%d", i)
+			if err := c.Set(
+				context.Background(),
+				key,
+				value,
+			); err != nil {
+				log.Fatal(err)
+			}
 
-	val, err := c.Get(context.Background(), fmt.Sprintf("leader_%d", 999))
-	if err != nil {
-		log.Fatal(err)
+			val, err := c.Get(context.Background(), key)
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Printf("GET val => %s, FROM client => %s", val, key)
+		}()
 	}
-	fmt.Println("GET val =>", val)
 }
 
 func TestNewClient(t *testing.T) {
