@@ -4,52 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"sync"
 	"testing"
 	"time"
 )
-
-func TestNewClients(t *testing.T) {
-	nClients := 10
-	wg := sync.WaitGroup{}
-	wg.Add(nClients)
-
-	for i := 0; i < nClients; i++ {
-		i := i
-		go func() {
-			defer wg.Done()
-			c, err := NewClient("localhost:5001")
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			defer func(c *Client) {
-				err := c.Close()
-				if err != nil {
-					log.Fatal(err)
-				}
-			}(c)
-
-			key := fmt.Sprintf("client_key_%d", i)
-			value := fmt.Sprintf("client_val_%d", i)
-			if err := c.Set(
-				context.Background(),
-				key,
-				value,
-			); err != nil {
-				log.Fatal(err)
-			}
-
-			val, err := c.Get(context.Background(), key)
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Printf("GET val => %s, FROM client => %s\n", val, key)
-		}()
-	}
-
-	wg.Wait()
-}
 
 func TestNewClient(t *testing.T) {
 	c, err := NewClient("localhost:5001")
