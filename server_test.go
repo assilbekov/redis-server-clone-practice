@@ -11,8 +11,8 @@ import (
 )
 
 func TestServerWithMultiClients(t *testing.T) {
+	server := NewServer(Config{})
 	go func() {
-		server := NewServer(Config{})
 		log.Fatal(server.Start())
 	}()
 
@@ -57,4 +57,8 @@ func TestServerWithMultiClients(t *testing.T) {
 	}
 
 	wg.Wait()
+
+	if len(server.peers) != 0 {
+		t.Errorf("expected 0 peers, got %d", len(server.peers))
+	}
 }
