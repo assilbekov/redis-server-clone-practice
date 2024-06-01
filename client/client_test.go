@@ -8,6 +8,30 @@ import (
 	"time"
 )
 
+func TestNewClient1(t *testing.T) {
+	c, err := NewClient("localhost:5001")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := c.Set(
+		context.Background(),
+		fmt.Sprintf("leader"),
+		fmt.Sprintf("Charlie"),
+	); err != nil {
+		log.Fatal(err)
+	}
+
+	val, err := c.Get(context.Background(), fmt.Sprintf("leader"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("GET val =>", val)
+
+	time.Sleep(time.Second * 2)
+	// select {} // we are blocking here to keep the server running
+}
+
 func TestNewClient(t *testing.T) {
 	c, err := NewClient("localhost:5001")
 	if err != nil {
