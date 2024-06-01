@@ -22,13 +22,13 @@ func TestNewClient1(t *testing.T) {
 
 	if err := c.Set(
 		context.Background(),
-		fmt.Sprintf("leader"),
-		fmt.Sprintf("Charlie"),
+		"leader",
+		1,
 	); err != nil {
 		log.Fatal(err)
 	}
 
-	val, err := c.Get(context.Background(), fmt.Sprintf("leader"))
+	val, err := c.Get(context.Background(), "leader")
 	if err != nil {
 		log.Fatal(err)
 	}

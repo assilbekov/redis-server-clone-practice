@@ -22,16 +22,19 @@ func NewClient(addr string) (*Client, error) {
 	return &Client{addr: addr, conn: conn}, nil
 }
 
-func (c *Client) Set(ctx context.Context, key, value string) error {
+func (c *Client) Set(ctx context.Context, key string, value any) error {
 	buf := &bytes.Buffer{}
 	wr := resp.NewWriter(buf)
-	wr.WriteArray([]resp.Value{
+	err := wr.WriteArray([]resp.Value{
 		resp.StringValue("SET"),
 		resp.StringValue(key),
-		resp.StringValue(value),
+		resp.AnyValue(value),
 	})
+	if err != nil {
+		return fmt.Errorf("failed to write value: %v", err)
+	}
 
-	_, err := c.conn.Write(buf.Bytes())
+	_, err = c.conn.Write(buf.Bytes())
 	return err
 }
 
