@@ -13,6 +13,12 @@ func TestNewClient1(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer func(c *Client) {
+		err := c.Close()
+		if err != nil {
+
+		}
+	}(c)
 
 	if err := c.Set(
 		context.Background(),
