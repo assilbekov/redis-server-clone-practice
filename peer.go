@@ -62,6 +62,7 @@ func (p *Peer) readLoop() error {
 
 					fmt.Printf("received set command: %s\n", cmd.key)
 				default:
+					fmt.Println("unknown command: ", value.String())
 				}
 			}
 		}
