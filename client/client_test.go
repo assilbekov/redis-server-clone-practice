@@ -1,13 +1,20 @@
 package client
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"github.com/redis/go-redis/v9"
+	"github.com/tidwall/resp"
 	"log"
 	"testing"
 	"time"
 )
+
+func TestNewClientRedisClient1(t *testing.T) {
+	buf := &bytes.Buffer{}
+	rw := resp.NewWriter(buf)
+}
 
 func TestNewClientRedisClient(t *testing.T) {
 	var ctx = context.Background()
@@ -17,8 +24,10 @@ func TestNewClientRedisClient(t *testing.T) {
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
+	fmt.Printf("rdb => %v\n", rdb)
+	fmt.Printf("rdb.Ping => %v\n", rdb.Ping(ctx).Val())
 
-	err := rdb.Set(ctx, "key", "value", 0).Err()
+	/*err := rdb.Set(ctx, "key", "value", 0).Err()
 	if err != nil {
 		panic(err)
 	}
@@ -27,7 +36,7 @@ func TestNewClientRedisClient(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("key", val)
+	fmt.Println("key", val)*/
 }
 
 func TestNewClient1(t *testing.T) {
