@@ -1,20 +1,13 @@
 package client
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"github.com/redis/go-redis/v9"
-	"github.com/tidwall/resp"
 	"log"
 	"testing"
 	"time"
 )
-
-func TestNewClientRedisClient1(t *testing.T) {
-	buf := &bytes.Buffer{}
-	rw := resp.NewWriter(buf)
-}
 
 func TestNewClientRedisClient(t *testing.T) {
 	var ctx = context.Background()
