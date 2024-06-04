@@ -37,33 +37,35 @@ func (p *Peer) readLoop() error {
 
 		if v.Type() == resp.Array {
 			for _, value := range v.Array() {
+				var cmd Command
 				switch value.String() {
 				case CommandGet:
 					if len(v.Array()) != 2 {
 						return fmt.Errorf("invalid get command")
 					}
-					cmd := GetCommand{
+					cmd = GetCommand{
 						key: v.Array()[1].Bytes(),
 					}
-
-					p.msgCh <- Message{peer: p, cmd: cmd}
-
-					fmt.Printf("received get command: %s\n", cmd.key)
 				case CommandSet:
 					if len(v.Array()) != 3 {
 						return fmt.Errorf("invalid set command")
 					}
-					cmd := SetCommand{
+					cmd = SetCommand{
 						key:   v.Array()[1].Bytes(),
 						value: v.Array()[2].Bytes(),
 					}
-
-					p.msgCh <- Message{peer: p, cmd: cmd}
-
-					fmt.Printf("received set command: %s\n", cmd.key)
+				case CommandHello:
+					if len(v.Array()) != 2 {
+						return fmt.Errorf("invalid hello command")
+					}
+					cmd = HelloCommand{
+						value: v.Array()[1].String(),
+					}
 				default:
 					fmt.Println("unknown command: ", value.String())
 				}
+
+				p.msgCh <- Message{peer: p, cmd: cmd}
 			}
 		}
 	}

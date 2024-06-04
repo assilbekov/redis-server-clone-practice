@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	CommandSet = "SET"
-	CommandGet = "GET"
+	CommandSet   = "SET"
+	CommandGet   = "GET"
+	CommandHello = "HELLO"
 )
 
 type Command interface {
@@ -23,6 +24,10 @@ type SetCommand struct {
 
 type GetCommand struct {
 	key []byte
+}
+
+type HelloCommand struct {
+	value string
 }
 
 func parseCommand(raw string) (Command, error) {
@@ -55,6 +60,16 @@ func parseCommand(raw string) (Command, error) {
 						key:   v.Array()[1].Bytes(),
 						value: v.Array()[2].Bytes(),
 					}
+					return cmd, nil
+				case CommandHello:
+					if len(v.Array()) != 2 {
+						return nil, fmt.Errorf("invalid hello command: %s", raw)
+					}
+
+					cmd := HelloCommand{
+						value: v.Array()[1].String(),
+					}
+
 					return cmd, nil
 				default:
 				}
