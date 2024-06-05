@@ -75,6 +75,8 @@ func (s *Server) handleMessage(msg Message) error {
 		if err != nil {
 			slog.Error("failed to send message", "err", err)
 		}
+	case HelloCommand:
+		fmt.Println("this is hello from the client : ", v.value)
 	}
 
 	return nil
