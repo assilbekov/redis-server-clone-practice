@@ -62,7 +62,7 @@ func (p *Peer) readLoop() error {
 						value: v.Array()[1].String(),
 					}
 				default:
-					fmt.Println("unknown command: ", value.String())
+					panic("unknown command: " + value.String())
 				}
 
 				p.msgCh <- Message{peer: p, cmd: cmd}
