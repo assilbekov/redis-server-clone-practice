@@ -63,6 +63,7 @@ func (s *Server) Start() error {
 }
 
 func (s *Server) handleMessage(msg Message) error {
+	fmt.Println("received message", msg.cmd)
 	switch v := msg.cmd.(type) {
 	case SetCommand:
 		return s.kv.Set(v.key, v.value)

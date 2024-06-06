@@ -8,7 +8,7 @@ import (
 const (
 	CommandSet   = "SET"
 	CommandGet   = "GET"
-	CommandHello = "HELLO"
+	CommandHello = "hello"
 )
 
 type Command interface {

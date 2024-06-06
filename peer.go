@@ -55,9 +55,6 @@ func (p *Peer) readLoop() error {
 						value: v.Array()[2].Bytes(),
 					}
 				case CommandHello:
-					if len(v.Array()) != 2 {
-						return fmt.Errorf("invalid hello command")
-					}
 					cmd = HelloCommand{
 						value: v.Array()[1].String(),
 					}

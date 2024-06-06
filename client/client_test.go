@@ -20,12 +20,12 @@ func TestNewClientRedisClient(t *testing.T) {
 	fmt.Printf("rdb => %v\n", rdb)
 	fmt.Printf("rdb.Ping => %v\n", rdb.Ping(ctx).Val())
 
-	/*err := rdb.Set(ctx, "key", "value", 0).Err()
+	err := rdb.Set(ctx, "key", "value", 0).Err()
 	if err != nil {
 		panic(err)
 	}
 
-	val, err := rdb.Get(ctx, "key").Result()
+	/*val, err := rdb.Get(ctx, "key").Result()
 	if err != nil {
 		panic(err)
 	}
