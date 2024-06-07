@@ -26,7 +26,7 @@ func (c *Client) Set(ctx context.Context, key string, value any) error {
 	buf := &bytes.Buffer{}
 	wr := resp.NewWriter(buf)
 	err := wr.WriteArray([]resp.Value{
-		resp.StringValue("SET"),
+		resp.StringValue("set"),
 		resp.StringValue(key),
 		resp.AnyValue(value),
 	})

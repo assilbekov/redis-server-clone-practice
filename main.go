@@ -87,7 +87,6 @@ func (s *Server) handleMessage(msg Message) error {
 			slog.Error("failed to send message", "err", err)
 			return fmt.Errorf("failed to send message: %w", err)
 		}
-		fmt.Println("this is hello from the client : ", v.value)
 	}
 
 	return nil
