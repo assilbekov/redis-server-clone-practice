@@ -66,7 +66,14 @@ func (s *Server) handleMessage(msg Message) error {
 	fmt.Println("received message", msg.cmd)
 	switch v := msg.cmd.(type) {
 	case SetCommand:
-		return s.kv.Set(v.key, v.value)
+		if err := s.kv.Set(v.key, v.value); err != nil {
+			return fmt.Errorf("failed to set key: %w", err)
+		}
+		_, err := msg.peer.Send([]byte("+OK\r\n"))
+		if err != nil {
+			slog.Error("failed to send message", "err", err)
+			return fmt.Errorf("failed to send message: %w", err)
+		}
 	case GetCommand:
 		value, ok := s.kv.Get(v.key)
 		if !ok {
