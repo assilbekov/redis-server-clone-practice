@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"github.com/tidwall/resp"
 	"log"
 	"redis-server-clone-practice/client"
 	"sync"
@@ -11,6 +13,11 @@ import (
 )
 
 func TestFooBar(t *testing.T) {
+	buf := &bytes.Buffer{}
+	rw := resp.NewWriter(buf)
+	rw.WriteString("OK")
+	fmt.Println(buf.String())
+
 	in := map[string]string{
 		"foo":  "bar",
 		"baz":  "qux",
