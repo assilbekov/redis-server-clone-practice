@@ -87,6 +87,7 @@ func (s *Server) handleMessage(msg Message) error {
 			return fmt.Errorf("failed to send message: %w", err)
 		}
 	case HelloCommand:
+		fmt.Println("received hello command", v.value)
 		spec := map[string]string{
 			"server": "redis",
 			"role":   "master",
