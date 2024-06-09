@@ -1,10 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"github.com/tidwall/resp"
 	"log"
 	"redis-server-clone-practice/client"
 	"sync"
@@ -13,18 +11,12 @@ import (
 )
 
 func TestFooBar(t *testing.T) {
-	buf := &bytes.Buffer{}
-	rw := resp.NewWriter(buf)
-	rw.WriteString("OK")
-	fmt.Println(buf.String())
-
 	in := map[string]string{
-		"foo":  "bar",
-		"baz":  "qux",
-		"quux": "corge",
+		"server":  "redis",
+		"version": "6.0 ",
 	}
 	out := respWriteMap(in)
-	fmt.Println(out)
+	fmt.Println(string(out))
 }
 
 func TestServerWithMultiClients(t *testing.T) {
