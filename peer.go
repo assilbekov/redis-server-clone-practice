@@ -37,6 +37,7 @@ func (p *Peer) readLoop() error {
 
 		if v.Type() == resp.Array {
 			for _, value := range v.Array() {
+				fmt.Println("value =>", value.String())
 				var cmd Command
 				switch value.String() {
 				case CommandGet:
