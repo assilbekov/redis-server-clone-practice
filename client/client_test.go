@@ -17,13 +17,12 @@ func TestNewClientRedisClient(t *testing.T) {
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
-	fmt.Printf("rdb => %v\n", rdb)
-	fmt.Printf("rdb.Ping => %v\n", rdb.Ping(ctx).Val())
 
-	err := rdb.Set(ctx, "key", "value", 0).Err()
-	if err != nil {
-		panic(err)
+	if err := rdb.Set(ctx, "key", "value", 0).Err(); err != nil {
+		t.Fatal(err)
 	}
+
+	fmt.Println("WE ARE HERE key", "value")
 
 	/*val, err := rdb.Get(ctx, "key").Result()
 	if err != nil {
