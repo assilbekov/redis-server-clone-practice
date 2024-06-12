@@ -36,35 +36,35 @@ func (p *Peer) readLoop() error {
 		}
 
 		if v.Type() == resp.Array {
-			for _, value := range v.Array() {
-				fmt.Println("value =>", value.String())
-				var cmd Command
-				switch value.String() {
-				case CommandGet:
-					if len(v.Array()) != 2 {
-						return fmt.Errorf("invalid get command")
-					}
-					cmd = GetCommand{
-						key: v.Array()[1].Bytes(),
-					}
-				case CommandSet:
-					if len(v.Array()) != 3 {
-						return fmt.Errorf("invalid set command")
-					}
-					cmd = SetCommand{
-						key:   v.Array()[1].Bytes(),
-						value: v.Array()[2].Bytes(),
-					}
-				case CommandHello:
-					cmd = HelloCommand{
-						value: v.Array()[1].String(),
-					}
-				default:
-					fmt.Printf("unknown command: %+v\n", value.Array())
+			//for _, value := range v.Array() {
+			//fmt.Println("value =>", value.String())
+			var cmd Command
+			switch v.String() {
+			case CommandGet:
+				if len(v.Array()) != 2 {
+					return fmt.Errorf("invalid get command")
 				}
-
-				p.msgCh <- Message{peer: p, cmd: cmd}
+				cmd = GetCommand{
+					key: v.Array()[1].Bytes(),
+				}
+			case CommandSet:
+				if len(v.Array()) != 3 {
+					return fmt.Errorf("invalid set command")
+				}
+				cmd = SetCommand{
+					key:   v.Array()[1].Bytes(),
+					value: v.Array()[2].Bytes(),
+				}
+			case CommandHello:
+				cmd = HelloCommand{
+					value: v.Array()[1].String(),
+				}
+			default:
+				//fmt.Printf("unknown command: %+v\n", value.Array())
 			}
+
+			p.msgCh <- Message{peer: p, cmd: cmd}
+			//}
 		}
 	}
 	return nil
