@@ -68,6 +68,7 @@ func (s *Server) handleMessage(msg Message) error {
 	slog.Info("received message", "type", reflect.TypeOf(msg.cmd))
 	switch v := msg.cmd.(type) {
 	case SetCommand:
+		fmt.Println("received set command", v.value)
 		if err := s.kv.Set(v.key, v.value); err != nil {
 			return fmt.Errorf("failed to set key: %w", err)
 		}
@@ -89,11 +90,7 @@ func (s *Server) handleMessage(msg Message) error {
 	case HelloCommand:
 		fmt.Println("received hello command", v.value)
 		spec := map[string]string{
-			"server":  "redis",
-			"version": "6.0.0",
-			"proto":   "3",
-			"mode":    "standalone",
-			"role":    "master",
+			"server": "redis",
 		}
 		_, err := msg.peer.Send(respWriteMap(spec))
 		if err != nil {
