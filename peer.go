@@ -63,8 +63,6 @@ func (p *Peer) readLoop() error {
 						value: v.Array()[1].String(),
 					}
 					p.msgCh <- Message{peer: p, cmd: cmd}
-				default:
-					fmt.Printf("unknown command: %+v\n", value.Array())
 				}
 
 			}
