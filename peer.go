@@ -36,7 +36,10 @@ func (p *Peer) readLoop() error {
 		}
 
 		if v.Type() == resp.Array {
-			for _, value := range v.Array() {
+			cmd := v.Array()[0]
+			fmt.Println("cmd =>", cmd.String())
+			fmt.Println("this should be a command", cmd.String())
+			/*for _, value := range v.Array() {
 				fmt.Println("value =>", value.String())
 				//var cmd Command
 				switch value.String() {
@@ -65,7 +68,7 @@ func (p *Peer) readLoop() error {
 					p.msgCh <- Message{peer: p, cmd: cmd}
 				}
 
-			}
+			}*/
 		}
 	}
 	return nil
