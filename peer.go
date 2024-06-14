@@ -44,6 +44,10 @@ func (p *Peer) readLoop() error {
 			switch rawCmd.String() {
 			case CommandGet:
 			case CommandSet:
+				cmd = SetCommand{
+					key:   v.Array()[1].Bytes(),
+					value: v.Array()[2].Bytes(),
+				}
 			case CommandHello:
 				cmd = HelloCommand{
 					value: v.Array()[1].String(),
