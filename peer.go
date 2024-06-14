@@ -44,6 +44,10 @@ func (p *Peer) readLoop() error {
 			case CommandGet:
 			case CommandSet:
 			case CommandHello:
+				cmd := HelloCommand{
+					value: v.Array()[1].String(),
+				}
+				p.msgCh <- Message{peer: p, cmd: cmd}
 			}
 			/*for _, value := range v.Array() {
 				fmt.Println("value =>", value.String())
