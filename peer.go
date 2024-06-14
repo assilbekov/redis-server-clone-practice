@@ -43,6 +43,9 @@ func (p *Peer) readLoop() error {
 
 			switch rawCmd.String() {
 			case CommandGet:
+				cmd = GetCommand{
+					key: v.Array()[1].Bytes(),
+				}
 			case CommandSet:
 				cmd = SetCommand{
 					key:   v.Array()[1].Bytes(),
@@ -52,6 +55,8 @@ func (p *Peer) readLoop() error {
 				cmd = HelloCommand{
 					value: v.Array()[1].String(),
 				}
+			default:
+				fmt.Println("invalid command", rawCmd)
 			}
 			p.msgCh <- Message{peer: p, cmd: cmd}
 			/*for _, value := range v.Array() {
