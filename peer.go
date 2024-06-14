@@ -35,47 +35,48 @@ func (p *Peer) readLoop() error {
 			log.Fatal(err)
 		}
 
+		var cmd Command
 		if v.Type() == resp.Array {
-			cmd := v.Array()[0]
-			fmt.Println("cmd =>", cmd.String())
-			fmt.Println("this should be a command", cmd.String())
+			rawCmd := v.Array()[0]
+			fmt.Println("rawCmd =>", rawCmd.String())
+			fmt.Println("this should be a command", rawCmd.String())
 
-			switch cmd.String() {
+			switch rawCmd.String() {
 			case CommandGet:
 			case CommandSet:
 			case CommandHello:
-				cmd := HelloCommand{
+				cmd = HelloCommand{
 					value: v.Array()[1].String(),
 				}
-				p.msgCh <- Message{peer: p, cmd: cmd}
 			}
+			p.msgCh <- Message{peer: p, cmd: cmd}
 			/*for _, value := range v.Array() {
 				fmt.Println("value =>", value.String())
-				//var cmd Command
+				//var rawCmd Command
 				switch value.String() {
 				case CommandGet:
 					if len(v.Array()) != 2 {
 						return fmt.Errorf("invalid get command")
 					}
-					cmd := GetCommand{
+					rawCmd := GetCommand{
 						key: v.Array()[1].Bytes(),
 					}
 
-					p.msgCh <- Message{peer: p, cmd: cmd}
+					p.msgCh <- Message{peer: p, rawCmd: rawCmd}
 				case CommandSet:
 					if len(v.Array()) != 3 {
 						return fmt.Errorf("invalid set command")
 					}
-					cmd := SetCommand{
+					rawCmd := SetCommand{
 						key:   v.Array()[1].Bytes(),
 						value: v.Array()[2].Bytes(),
 					}
-					p.msgCh <- Message{peer: p, cmd: cmd}
+					p.msgCh <- Message{peer: p, rawCmd: rawCmd}
 				case CommandHello:
-					cmd := HelloCommand{
+					rawCmd := HelloCommand{
 						value: v.Array()[1].String(),
 					}
-					p.msgCh <- Message{peer: p, cmd: cmd}
+					p.msgCh <- Message{peer: p, rawCmd: rawCmd}
 				}
 
 			}*/
