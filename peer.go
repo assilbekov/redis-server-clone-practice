@@ -55,6 +55,10 @@ func (p *Peer) readLoop() error {
 				cmd = HelloCommand{
 					value: v.Array()[1].String(),
 				}
+			case CommandClient:
+				cmd = ClientCommand{
+					value: v.Array()[1].String(),
+				}
 			default:
 				fmt.Println("invalid command", rawCmd)
 			}

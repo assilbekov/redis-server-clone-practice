@@ -40,8 +40,6 @@ func respWriteMap(m map[string]string) []byte {
 	for k, v := range m {
 		rw.WriteString(k)
 		rw.WriteString(":" + v)
-		//buf.WriteString(fmt.Sprintf("%s\r\n", k))
-		//buf.WriteString(fmt.Sprintf("%s\r\n", v))
 	}
 	return buf.Bytes()
 }
