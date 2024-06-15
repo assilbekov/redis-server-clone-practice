@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
+	"github.com/tidwall/resp"
 	"log"
 	"log/slog"
 	"net"
@@ -67,6 +69,16 @@ func (s *Server) handleMessage(msg Message) error {
 	fmt.Println("received message", msg.cmd)
 	slog.Info("received message", "type", reflect.TypeOf(msg.cmd))
 	switch v := msg.cmd.(type) {
+	case ClientCommand:
+		fmt.Println("received client command", v.value)
+		buf := &bytes.Buffer{}
+		rw := resp.NewWriter(buf)
+		rw.WriteString("+OK")
+		_, err := msg.peer.Send(buf.Bytes())
+		if err != nil {
+			slog.Error("failed to send message", "err", err)
+			return fmt.Errorf("failed to send message: %w", err)
+		}
 	case SetCommand:
 		fmt.Println("received set command", v.value)
 		if err := s.kv.Set(v.key, v.value); err != nil {
