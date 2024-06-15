@@ -7,9 +7,10 @@ import (
 )
 
 const (
-	CommandSet   = "SET"
-	CommandGet   = "GET"
-	CommandHello = "hello"
+	CommandSet    = "SET"
+	CommandGet    = "GET"
+	CommandHello  = "hello"
+	CommandClient = "client"
 )
 
 type Command interface {
@@ -25,6 +26,10 @@ type GetCommand struct {
 }
 
 type HelloCommand struct {
+	value string
+}
+
+type ClientCommand struct {
 	value string
 }
 
