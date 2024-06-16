@@ -10,7 +10,7 @@ import (
 )
 
 func TestNewClientRedisClient(t *testing.T) {
-	var ctx = context.Background()
+	//var ctx = context.Background()
 
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "localhost:5001",
@@ -18,7 +18,11 @@ func TestNewClientRedisClient(t *testing.T) {
 		DB:       0,  // use default DB
 	})
 
-	if err := rdb.Set(ctx, "key", "value", 0).Err(); err != nil {
+	if err := rdb.Set(context.Background(), "foo", "bar", 0).Err(); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := rdb.Get(context.Background(), "foo").Result(); err != nil {
 		t.Fatal(err)
 	}
 
