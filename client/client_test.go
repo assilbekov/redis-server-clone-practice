@@ -9,9 +9,7 @@ import (
 	"time"
 )
 
-func TestNewClientRedisClient(t *testing.T) {
-	//var ctx = context.Background()
-
+func TestRedisClient(t *testing.T) {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "localhost:5001",
 		Password: "", // no password set
