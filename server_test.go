@@ -3,12 +3,37 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/redis/go-redis/v9"
 	"log"
 	"redis-server-clone-practice/client"
 	"sync"
 	"testing"
 	"time"
 )
+
+func TestRedisClient(t *testing.T) {
+	server := NewServer(Config{})
+	go func() {
+		log.Fatal(server.Start())
+	}()
+	time.Sleep(time.Second)
+
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "localhost:5001",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+
+	if err := rdb.Set(context.Background(), "foo", "bar", 0).Err(); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := rdb.Get(context.Background(), "foo").Result(); err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Println("WE ARE HERE key", "value")
+}
 
 func TestFooBar(t *testing.T) {
 	in := map[string]string{
