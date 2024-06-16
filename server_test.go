@@ -28,8 +28,6 @@ func TestRedisClient(t *testing.T) {
 		DB:       0,  // use default DB
 	})
 
-	key, val := "foo", "bar"
-
 	testCases := map[string]string{
 		"foo": "bar",
 		"bar": "baz",
@@ -50,22 +48,6 @@ func TestRedisClient(t *testing.T) {
 		if newVal != v {
 			t.Errorf("expected %s, got %s", v, newVal)
 		}
-
-		fmt.Println("WE ARE HERE key", "value")
-	}
-
-	if err := rdb.Set(context.Background(), key, val, 0).Err(); err != nil {
-		t.Fatal(err)
-	}
-
-	newVal, err := rdb.Get(context.Background(), key).Result()
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if newVal != val {
-		t.Errorf("expected %s, got %s", val, newVal)
 	}
 
 	fmt.Println("WE ARE HERE key", "value")
