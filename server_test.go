@@ -12,11 +12,15 @@ import (
 )
 
 func TestRedisClient(t *testing.T) {
-	server := NewServer(Config{})
+	listenAddr := ":5001"
+	server := NewServer(Config{
+		ListenAddr: listenAddr,
+	})
+
 	go func() {
 		log.Fatal(server.Start())
 	}()
-	time.Sleep(time.Second)
+	time.Sleep(time.Second / 2)
 
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "localhost:5001",
@@ -24,12 +28,20 @@ func TestRedisClient(t *testing.T) {
 		DB:       0,  // use default DB
 	})
 
-	if err := rdb.Set(context.Background(), "foo", "bar", 0).Err(); err != nil {
+	key, val := "foo", "bar"
+
+	if err := rdb.Set(context.Background(), key, val, 0).Err(); err != nil {
 		t.Fatal(err)
 	}
 
-	if _, err := rdb.Get(context.Background(), "foo").Result(); err != nil {
+	newVal, err := rdb.Get(context.Background(), key).Result()
+
+	if err != nil {
 		t.Fatal(err)
+	}
+
+	if newVal != val {
+		t.Errorf("expected %s, got %s", val, newVal)
 	}
 
 	fmt.Println("WE ARE HERE key", "value")
